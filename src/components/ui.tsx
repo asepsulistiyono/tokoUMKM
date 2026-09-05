@@ -66,7 +66,7 @@ export function SectionHeading({
       >
         {title}
         <svg
-          className="absolute -bottom-2.5 left-0 w-full"
+          className="pointer-events-none absolute -bottom-3 left-0 h-3 w-full"
           viewBox="0 0 120 12"
           preserveAspectRatio="none"
           aria-hidden="true"
