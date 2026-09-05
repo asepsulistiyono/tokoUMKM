@@ -50,7 +50,7 @@ export default function Hero({
         />
       </svg>
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-12 lg:grid-cols-12 lg:pb-28 lg:pt-16">
+      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-12 lg:grid-cols-12 lg:pb-28 lg:pt-16">
         {/* -------- Kiri: kata-kata lapak -------- */}
         <div className="lg:col-span-7">
           <div className="flex flex-wrap items-center gap-2.5">
@@ -104,7 +104,7 @@ export default function Hero({
           </div>
 
           {/* Info lapak: satu strip, bukan kartu-kartuan */}
-          <div className="mt-10 flex flex-col divide-y-2 divide-ink overflow-hidden rounded-xl border-2 border-ink bg-white shadow-hard sm:flex-row sm:divide-x-2 sm:divide-y-0">
+          <div className="relative z-20 mt-10 flex flex-col divide-y-2 divide-ink overflow-hidden rounded-xl border-2 border-ink bg-white shadow-hard sm:flex-row sm:divide-x-2 sm:divide-y-0">
             {[
               { icon: IconClock, label: "Jam buka", value: `${shop.jamBuka} WIB` },
               { icon: IconPin, label: "Alamat lapak", value: shop.alamat },
@@ -120,7 +120,7 @@ export default function Hero({
                   <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink/45">
                     {it.label}
                   </p>
-                  <p className="truncate text-sm font-bold">{it.value}</p>
+                  <p className="break-words text-sm font-bold leading-snug">{it.value}</p>
                 </div>
               </div>
             ))}
@@ -128,7 +128,7 @@ export default function Hero({
         </div>
 
         {/* -------- Kanan: kolase foto ala kartu pos -------- */}
-        <div className="relative mx-auto w-full max-w-md lg:col-span-5">
+        <div className="relative z-0 mx-auto mt-6 w-full max-w-md lg:col-span-5 lg:mt-0">
           <div
             className="animate-floaty"
             style={{ "--rot": "2deg" } as CSSProperties}
@@ -147,7 +147,7 @@ export default function Hero({
           </div>
 
           <div
-            className="animate-floaty absolute -left-6 -top-9 w-36 sm:-left-10 sm:w-44"
+            className="animate-floaty absolute -left-4 -top-5 w-32 sm:-left-10 sm:-top-9 sm:w-44"
             style={{ "--rot": "-8deg", animationDelay: "0.7s" } as CSSProperties}
           >
             <SmartImg
@@ -159,7 +159,7 @@ export default function Hero({
           </div>
 
           <div
-            className="animate-floaty absolute -bottom-8 -right-4 w-32 sm:-right-8 sm:w-40"
+            className="animate-floaty absolute -bottom-5 -right-2 w-28 sm:-bottom-8 sm:-right-8 sm:w-40"
             style={{ "--rot": "7deg", animationDelay: "1.4s" } as CSSProperties}
           >
             <SmartImg
@@ -171,7 +171,7 @@ export default function Hero({
           </div>
 
           {/* Stiker berputar */}
-          <div className="absolute -top-10 right-0 z-10 h-28 w-28 sm:-right-6">
+          <div className="absolute -top-6 right-0 h-24 w-24 sm:-right-6 sm:-top-10 sm:h-28 sm:w-28">
             <svg viewBox="0 0 120 120" className="h-full w-full animate-spin-slow">
               <defs>
                 <path
