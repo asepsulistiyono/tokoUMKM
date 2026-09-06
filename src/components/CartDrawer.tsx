@@ -33,6 +33,7 @@ export default function CartDrawer({
   const [err, setErr] = useState("");
 
   const subtotal = lines.reduce((a, l) => a + l.qty * l.product.harga, 0);
+  const itemCount = lines.reduce((a, l) => a + l.qty, 0);
   const minAntar = shop.gratisAntarMin;
   const free = minAntar > 0 && subtotal >= minAntar;
   const sisa = Math.max(0, minAntar - subtotal);
@@ -67,33 +68,50 @@ export default function CartDrawer({
         }`}
         aria-hidden="true"
       />
+
+      {/* HP: panel naik dari bawah · Layar besar: panel geser dari kanan */}
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l-[3px] border-ink bg-paper transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed z-50 flex flex-col border-[3px] border-ink bg-paper transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]
+          inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[20px] border-b-0
+          sm:inset-x-auto sm:bottom-0 sm:right-0 sm:top-0 sm:h-dvh sm:max-h-none sm:max-w-md sm:rounded-none sm:border-y-0 sm:border-r-0
+          ${
+            open
+              ? "translate-y-0 sm:translate-x-0"
+              : "translate-y-full sm:translate-y-0 sm:translate-x-full"
+          }`}
         role="dialog"
         aria-label="Keranjang belanja"
       >
-        <header className="flex h-16 shrink-0 items-center justify-between border-b-[3px] border-ink bg-sun-400 px-5">
-          <h2 className="flex items-center gap-2.5 font-display text-xl">
+        {/* pegangan panel (HP) */}
+        <div className="flex justify-center border-b-2 border-ink/10 py-2 sm:hidden">
+          <span className="h-1.5 w-14 rounded-full bg-ink/20" />
+        </div>
+
+        <header className="flex h-14 shrink-0 items-center justify-between border-b-[3px] border-ink bg-sun-400 px-4 sm:h-16 sm:px-5">
+          <h2 className="flex items-center gap-2.5 font-display text-lg sm:text-xl">
             Keranjang
-            {lines.length > 0 && (
+            {itemCount > 0 && (
               <span className="rounded-full border-2 border-ink bg-white px-2 py-0.5 text-xs font-extrabold">
-                {lines.reduce((a, l) => a + l.qty, 0)} item
+                {itemCount} item
               </span>
             )}
           </h2>
-          <button
-            onClick={onClose}
-            className="grid h-9 w-9 place-items-center rounded-lg border-2 border-ink bg-white shadow-hard-sm transition-transform hover:rotate-90"
-            aria-label="Tutup keranjang"
-          >
-            <IconClose className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-3">
+            {lines.length > 0 && (
+              <p className="font-display text-base sm:text-lg">{formatRupiah(subtotal)}</p>
+            )}
+            <button
+              onClick={onClose}
+              className="grid h-9 w-9 place-items-center rounded-lg border-2 border-ink bg-white shadow-hard-sm transition-transform hover:rotate-90"
+              aria-label="Tutup keranjang"
+            >
+              <IconClose className="h-4 w-4" />
+            </button>
+          </div>
         </header>
 
         {lines.length === 0 ? (
-          <div className="grid flex-1 place-items-center p-8 text-center">
+          <div className="grid min-h-0 flex-1 place-items-center overflow-y-auto p-8 text-center">
             <div>
               <IconCart className="mx-auto h-16 w-16 text-ink/15" />
               <p className="mt-4 font-display text-2xl">Masih kosong nih…</p>
@@ -110,23 +128,26 @@ export default function CartDrawer({
           </div>
         ) : (
           <>
-            <div className="flex-1 space-y-3 overflow-y-auto p-4">
+            {/* Daftar belanjaan — bagian ini yang di-scroll */}
+            <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto p-3 sm:p-4">
               {lines.map((l) => (
                 <div
                   key={l.product.id}
-                  className="flex gap-3 rounded-xl border-2 border-ink bg-white p-3 shadow-hard-sm"
+                  className="flex items-center gap-2.5 rounded-xl border-2 border-ink bg-white p-2.5 shadow-hard-sm sm:gap-3 sm:p-3"
                 >
                   <SmartImg
                     src={l.product.foto}
                     alt={l.product.nama}
-                    className="h-16 w-16 shrink-0 rounded-lg border-2 border-ink object-cover"
+                    className="h-14 w-14 shrink-0 rounded-lg border-2 border-ink object-cover sm:h-16 sm:w-16"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-extrabold">{l.product.nama}</p>
-                    <p className="text-xs font-semibold text-ink/50">
+                    <p className="truncate text-[13px] font-extrabold sm:text-sm">
+                      {l.product.nama}
+                    </p>
+                    <p className="text-[11px] font-semibold text-ink/50 sm:text-xs">
                       {formatRupiah(l.product.harga)} {l.product.satuan}
                     </p>
-                    <div className="mt-2 flex items-center gap-1">
+                    <div className="mt-1.5 flex items-center gap-1">
                       <button
                         onClick={() => onSetQty(l.product.id, l.qty - 1)}
                         className="grid h-7 w-7 place-items-center rounded-md border-2 border-ink bg-sprout transition-all hover:bg-sun-200 active:scale-90"
@@ -145,8 +166,8 @@ export default function CartDrawer({
                       </button>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end justify-between">
-                    <p className="text-sm font-extrabold">
+                  <div className="flex shrink-0 flex-col items-end gap-2">
+                    <p className="text-[13px] font-extrabold sm:text-sm">
                       {formatRupiah(l.qty * l.product.harga)}
                     </p>
                     <button
@@ -161,9 +182,10 @@ export default function CartDrawer({
               ))}
             </div>
 
+            {/* Formulir pesanan — menempel di bawah, tidak ikut hilang saat scroll */}
             <form
               onSubmit={submit}
-              className="shrink-0 space-y-3.5 border-t-[3px] border-ink bg-white p-4 sm:p-5"
+              className="max-h-[52dvh] shrink-0 space-y-3 overflow-y-auto border-t-[3px] border-ink bg-white p-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))] sm:max-h-none sm:space-y-3.5 sm:p-5"
             >
               {minAntar > 0 && (
                 <div>
@@ -198,7 +220,7 @@ export default function CartDrawer({
                     ongkir dikonfirmasi via WA
                   </p>
                 </div>
-                <p className="font-display text-2xl">{formatRupiah(subtotal)}</p>
+                <p className="font-display text-xl sm:text-2xl">{formatRupiah(subtotal)}</p>
               </div>
 
               <div className="grid gap-2">
@@ -252,9 +274,6 @@ export default function CartDrawer({
                 <IconWhatsApp className="h-5 w-5" />
                 Pesan via WhatsApp
               </button>
-              <p className="text-center text-[11px] font-semibold text-ink/45">
-                Pesananmu otomatis tersusun rapi di chat {shop.namaToko}.
-              </p>
             </form>
           </>
         )}
